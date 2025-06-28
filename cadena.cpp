@@ -60,6 +60,7 @@ struct VendedorConTotal
     int codigo_vendedor;
     float comision_total;
     int sucursal;
+    int cantidad_ventas;
 };
 
 void burbujeo_sucursal(Vendedor arr[], int n)
@@ -95,7 +96,7 @@ void mostrar_vector_resultado(VendedorConTotal arr[], int cant)
         cout << "Vendedor: " << arr[i].codigo_vendedor << endl;
         cout << "Comision total ganada: " << arr[i].comision_total << endl;
     }
-};
+}
 
 int busquedaBinaria(Vendedor arr[], int cant, int valor)
 {
@@ -132,10 +133,10 @@ void apareo(Vendedor vecA[], int cant_vendedores, Venta vecB[], int cant_ventas,
 {
     int i = 0;
     int j = 0;
-    int k = 0;
+    k = 0;
     long key;
-    int acumulador_comisiones;
-    
+    float acumulador_comisiones;
+    int cantidad_ventas;
 
     while (i < cant_vendedores)
     {
@@ -144,6 +145,7 @@ void apareo(Vendedor vecA[], int cant_vendedores, Venta vecB[], int cant_ventas,
 
         key = vecA[i].codigo_vendedor;
         acumulador_comisiones = 0;
+        cantidad_ventas = 0;
 
         while (j < cant_ventas && key == vecB[j].codigo_vendedor)
         {
@@ -155,16 +157,66 @@ void apareo(Vendedor vecA[], int cant_vendedores, Venta vecB[], int cant_ventas,
                 acumulador_comisiones += vecB[j].comision_ganada;
             }
             j++;
+            cantidad_ventas++;
         }
         i++;
         vecC[k].comision_total = acumulador_comisiones;
+        vecC[k].cantidad_ventas = cantidad_ventas;
         k++;
     }
 
 }
 
-// **5)** Escribir una función que muestre un reporte por sucursal indicando: nombre de la sucursal, cantidad total de ventas y el vendedor con mayor total
-// de comisiones (usar corte de control).
+// **5)** Escribir una función que muestre un reporte por sucursal indicando: nombre de la sucursal, cantidad total de ventas y el vendedor con mayor total de comisiones (usar corte de control).
+
+void listarPresentismo(Venta vec[], int n)
+{
+
+    //i: recorre todo el vector.
+
+    //ausentes: contador de faltas por empleado.
+
+    //key: guarda el legajo actual.
+
+    int i = 0;
+    int ausentes = 0;
+    int key;
+
+    cout << "=== REPORTE DE FALTAS POR ALUMNO ===" << endl;
+    cout << "------------------------------------" << endl;
+
+    // El primer ciclo es el que recorre el lote completo
+    while (i < n)
+    {
+        // Guardo el valor del legajo actual como clave
+        // Esto permite agrupar los registros por legajo
+        key = vec[i].legajo;
+
+        // Inicializo contador de ausentes para este legajo
+        ausentes = 0;
+
+        // El segundo ciclo se mantiene por el sublote, mientras sea el mismo
+        // legajo y aun no se haya acabado el vector
+        //Este bucle procesa el sublote, es decir, todos los registros que tienen el mismo legajo.
+        while (i < n && key == vec[i].legajo)
+        {
+            //se agrega el i<n para evitar el desbordamiento 
+
+            // Cuento si es un registro de ausente
+            if (!vec[i].presente)
+            {
+                ausentes++;
+            }
+            i++; // Avanza a la siguiente posicion
+        }
+
+        // Mostramos resultados por cada sublote (legajo)
+        cout << "Legajo: " << key << " - Faltas: " << ausentes << endl;
+    }
+
+    cout << "------------------------------------" << endl;
+    cout << "Fin del reporte" << endl;
+}
 
 // Variables globales con datos precargados
 const int MAX_VENDEDORES = 100;
@@ -219,6 +271,8 @@ int main()
 
     apareo(vendedores, cantVendedores, ventas, cantVentas, resultado, cantResultado);
     mostrar_vector_resultado(resultado, cantResultado);
+
+    cout << "holsfjasf";
 
     return 0;
 }
