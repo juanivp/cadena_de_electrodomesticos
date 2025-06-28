@@ -167,51 +167,70 @@ void apareo(Vendedor vecA[], int cant_vendedores, Venta vecB[], int cant_ventas,
 
 }
 
-// **5)** Escribir una función que muestre un reporte por sucursal indicando: nombre de la sucursal, cantidad total de ventas y el vendedor con mayor total de comisiones (usar corte de control).
+// **5)** Escribir una función que muestre un reporte por sucursal indicando: nombre de la sucursal, 
+//cantidad total de ventas y el vendedor con mayor total de comisiones (usar corte de control).
 
-void listarPresentismo(Venta vec[], int n)
+//ordenamos por sucursal 
+void burbujeo_sucursal(VendedorConTotal arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j].sucursal > arr[j + 1].sucursal)
+            {
+                // Intercambiar
+                VendedorConTotal temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void corte_simple(VendedorConTotal vec[], int cant_elementos)
 {
 
-    //i: recorre todo el vector.
-
-    //ausentes: contador de faltas por empleado.
-
-    //key: guarda el legajo actual.
-
     int i = 0;
-    int ausentes = 0;
+    int cantidad_ventas_por_sucursal;
     int key;
+    int mayor_total_comisiones;
+    long codigo_vendedor_mayor_ventas;
 
-    cout << "=== REPORTE DE FALTAS POR ALUMNO ===" << endl;
-    cout << "------------------------------------" << endl;
-
-    // El primer ciclo es el que recorre el lote completo
-    while (i < n)
+    while (i < cant_elementos)
     {
-        // Guardo el valor del legajo actual como clave
-        // Esto permite agrupar los registros por legajo
-        key = vec[i].legajo;
+        cantidad_ventas_por_sucursal = 0;
+        mayor_total_comisiones = -1;
 
-        // Inicializo contador de ausentes para este legajo
-        ausentes = 0;
+        key = vec[i].sucursal;
 
-        // El segundo ciclo se mantiene por el sublote, mientras sea el mismo
-        // legajo y aun no se haya acabado el vector
-        //Este bucle procesa el sublote, es decir, todos los registros que tienen el mismo legajo.
-        while (i < n && key == vec[i].legajo)
+        while (i < cant_elementos && key == vec[i].sucursal)
         {
-            //se agrega el i<n para evitar el desbordamiento 
 
-            // Cuento si es un registro de ausente
-            if (!vec[i].presente)
+            cantidad_ventas_por_sucursal += vec[i].cantidad_ventas;
+            if (vec[i].comision_total > mayor_total_comisiones)
             {
-                ausentes++;
+               mayor_total_comisiones = vec[i].comision_total;
+               codigo_vendedor_mayor_ventas = vec[i].codigo_vendedor;
             }
-            i++; // Avanza a la siguiente posicion
+            i++; 
+        
         }
-
+        // Sucursal (1: Centro, 2: Shopping)
         // Mostramos resultados por cada sublote (legajo)
-        cout << "Legajo: " << key << " - Faltas: " << ausentes << endl;
+        if (key == 1)
+        {
+            cout << "Centro"<< endl;
+            cout << "Cantidad de ventas: " << cantidad_ventas_por_sucursal << endl;
+            cout << "Vendedor mayor total de comisiones: " << codigo_vendedor_mayor_ventas << endl;
+            cout <<  "------------------------------------" << endl;
+        
+        } else if (key == 2) {
+            cout << "Shopping" << endl;
+            cout << "Cantidad de ventas: " << cantidad_ventas_por_sucursal << endl;
+            cout << "Vendedor mayor total de comisiones: " << codigo_vendedor_mayor_ventas << endl;
+        }
+ 
     }
 
     cout << "------------------------------------" << endl;
@@ -272,7 +291,9 @@ int main()
     apareo(vendedores, cantVendedores, ventas, cantVentas, resultado, cantResultado);
     mostrar_vector_resultado(resultado, cantResultado);
 
-    cout << "holsfjasf";
+    cout << "-------------------------" << endl;
+    burbujeo_sucursal(resultado, cantResultado);
+    corte_simple(resultado, cantResultado);
 
     return 0;
 }
